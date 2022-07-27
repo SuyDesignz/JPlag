@@ -13,6 +13,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import de.jplag.endToEndTesting.constants.constant;
+
 public class resultHelper {
 	private File resultXMLFile;
 	private NodeList testCaseNodes;
@@ -58,6 +60,6 @@ public class resultHelper {
 		DocumentBuilder builder;
 		builder = factory.newDocumentBuilder();
 		Document document = builder.parse(resultXMLFile);
-		testCaseNodes = document.getElementsByTagName("testcase");
+		testCaseNodes = document.getElementsByTagName(constant.XML_ROOT_FUNCTION_NODE_NAME);
 	}
 }

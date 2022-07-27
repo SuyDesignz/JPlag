@@ -10,4 +10,6 @@ public final class constant {
 	
 	public static final Path BASE_PATH_TO_JAVA_RESOURCES_SORTALGO = Path.of("src", "test", "resources", "java", "sortAlgo");
 	public static final Path BASE_PATH_TO_JAVA_RESULT_XML = Path.of("src", "test", "resources", "results", "javaResult.xml");
+	
+	public static final String XML_ROOT_FUNCTION_NODE_NAME = "testcase";
 }
