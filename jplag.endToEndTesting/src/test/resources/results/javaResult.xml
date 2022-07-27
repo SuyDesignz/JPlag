@@ -4,4 +4,8 @@
     	<testName>normalizationLevelTest_one</testName>
     	<testResult>100.0</testResult>
     </testcase>
+    <testcase id="1">
+    	<testName>normalizationLevelTest_two</testName>
+    	<testResult>100.001</testResult>
+    </testcase>
 </testResult>

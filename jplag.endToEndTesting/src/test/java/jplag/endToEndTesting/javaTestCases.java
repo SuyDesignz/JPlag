@@ -1,6 +1,7 @@
 package jplag.endToEndTesting;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.jplag.JPlag;
+import de.jplag.JPlagComparison;
 import de.jplag.JPlagResult;
 import de.jplag.endToEndTesting.constants.constant;
 import de.jplag.endToEndTesting.helper.jplagTestSuiteHelper;
@@ -36,7 +38,7 @@ class javaTestCases {
 			// TODO Auto-generated catch block
 			assertTrue(false, e.getMessage());
 		}
-		
+
 	}
 
 	/**
@@ -45,8 +47,10 @@ class javaTestCases {
 	@Test
 	void normalizationLevelTest_one() {
 		String[] testClassNames = new String[] { "SortAlgo.java", "SortAlgo1.java" };
-
+		
 		try {
+			
+			
 			jplagTestSuiteHelper testSuiteHelper = new jplagTestSuiteHelper(testClassNames);
 			List<String> tempList = new ArrayList<String>();
 			tempList.add(testSuiteHelper.getFolderPath());
@@ -55,6 +59,14 @@ class javaTestCases {
 
 			JPlag jplag = new JPlag(options);
 			JPlagResult result = jplag.run();
+			
+			String resultFromXML = resultHelper.getSavedTestResult(new Object() {
+			}.getClass().getEnclosingMethod().getName());
+			//shout be only one
+			for (JPlagComparison jPlagComparison : result.getComparisons()) {
+				System.out.println("Comparison of the stored values and the current equality values");
+				assertEquals(Float.parseFloat(resultFromXML), jPlagComparison.similarity()); 
+			}
 			// after close the created directories are deleted
 			testSuiteHelper.close();
 
@@ -79,6 +91,15 @@ class javaTestCases {
 
 			JPlag jplag = new JPlag(options);
 			JPlagResult result = jplag.run();
+			
+			String resultFromXML = resultHelper.getSavedTestResult(new Object() {
+			}.getClass().getEnclosingMethod().getName());
+			//shout be only one
+			for (JPlagComparison jPlagComparison : result.getComparisons()) {
+				System.out.println("Comparison of the stored values and the current equality values");
+				assertEquals(Float.parseFloat(resultFromXML), jPlagComparison.similarity()); 
+			}
+			
 			// after close the created directories are deleted
 			testSuiteHelper.close();
 
