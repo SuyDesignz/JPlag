@@ -13,12 +13,6 @@ import java.util.Arrays;
 import javax.annotation.processing.FilerException;
 
 public class jplagTestSuiteHelper {
-	// can be exchanged for a suitable standard path if necessary
-	private static final String EMPTY_STRING = "";
-	private static final String TEMP_DIRECTORY_NAME = "submission";
-	private static final String TEMP_SYSTEM_DIRECTORY = "java.io.tmpdir";
-
-	private final File testFileLocation = Path.of("src", "test", "resources", "java", "SortAlgo").toFile();
 
 	public String getFolderPath() {
 		return tempFolderPath;
@@ -84,9 +78,6 @@ public class jplagTestSuiteHelper {
 		String[] pathnames;
 		File f = new File(testFileLocation.getAbsolutePath());
 		pathnames = f.list();
-//		for (String pathname : pathnames) {
-//			System.out.println(pathname);
-//		}
 		return pathnames;
 	}
 

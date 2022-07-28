@@ -39,8 +39,8 @@ public class resultHelper {
 
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element eElement = (Element) node;
-				if (eElement.getElementsByTagName("testName").item(0).getTextContent().equalsIgnoreCase(functionName)) {
-					return eElement.getElementsByTagName("testResult").item(0).getTextContent();
+				if (eElement.getElementsByTagName(constant.XML_TEST_NAME_NODE).item(0).getTextContent().equalsIgnoreCase(functionName)) {
+					return eElement.getElementsByTagName(constant.XML_TEST_RESULT_NODE_NAME).item(0).getTextContent();
 				}
 			}
 		}

@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <testResult>
-    <testcase id="0">
+    <testcase>
     	<testName>normalizationLevelTest_one</testName>
     	<testResult>100.0</testResult>
     </testcase>
-    <testcase id="1">
+    <testcase>
     	<testName>normalizationLevelTest_two</testName>
-    	<testResult>100.001</testResult>
+    	<testResult>100.0</testResult>
+    </testcase>
+    <testcase>
+    	<testName>normalizationLevelTest_three</testName>
+    	<testResult>100.0</testResult>
     </testcase>
 </testResult>
