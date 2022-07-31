@@ -15,7 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JsonReader {
-	
+
 	private static String readAll(Reader rd) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int cp;
@@ -26,7 +26,8 @@ public class JsonReader {
 	}
 
 	/**
-	 * read in a json file located at the passing path. 
+	 * read in a json file located at the passing path.
+	 * 
 	 * @param path to the json file with extension
 	 * @return
 	 * @throws IOException
@@ -34,12 +35,12 @@ public class JsonReader {
 	 */
 	public static JSONObject readJsonFromPath(String path) throws IOException, JSONException {
 		if (!path.endsWith(".json")) {
-		    throw new JSONException("the specified filename in the path must be a *.json file");
+			throw new JSONException("the specified filename in the path must be a *.json file");
 		}
-		
+
 		File initialFile = new File(path);
 		InputStream targetStream = new FileInputStream(initialFile);
-		
+
 		try {
 			BufferedReader rd = new BufferedReader(new InputStreamReader(targetStream, Charset.forName("UTF-8")));
 			String jsonText = readAll(rd);

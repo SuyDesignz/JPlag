@@ -16,6 +16,10 @@ import de.jplag.endToEndTesting.constants.Constant;
 
 public class JPlagTestSuiteHelper {
 
+	private String[] resourceNames;
+	private String tempFolderPath;
+	private String[] classNames;
+
 	public String getFolderPath() {
 		return tempFolderPath;
 	}
@@ -24,22 +28,15 @@ public class JPlagTestSuiteHelper {
 		return resourceNames;
 	}
 
-	private String[] resourceNames;
-	private String tempFolderPath;
-	private String[] classNames;
-
-	public JPlagTestSuiteHelper() throws IOException{
-		
+	public JPlagTestSuiteHelper(String[] classNames) throws Exception {
+		this.classNames = classNames;
 		this.resourceNames = loadResource();
 		this.tempFolderPath = getTempFolderPath();
+
 		System.out.println(String.format("temp path at [%s]", this.tempFolderPath));
-	}
-	
-	public void createTestCase(String[] classNames) throws Exception
-	{
-		this.classNames = classNames;
 		createNewTestCaseDirectory();
 	}
+
 	/**
 	 * Copies the passed filenames to a temporary path to use them in the tests
 	 * 
