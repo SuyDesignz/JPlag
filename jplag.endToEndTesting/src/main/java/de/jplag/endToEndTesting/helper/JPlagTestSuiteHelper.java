@@ -12,7 +12,9 @@ import java.util.Arrays;
 
 import javax.annotation.processing.FilerException;
 
-public class jplagTestSuiteHelper {
+import de.jplag.endToEndTesting.constants.Constant;
+
+public class JPlagTestSuiteHelper {
 
 	public String getFolderPath() {
 		return tempFolderPath;
@@ -26,15 +28,18 @@ public class jplagTestSuiteHelper {
 	private String tempFolderPath;
 	private String[] classNames;
 
-	public jplagTestSuiteHelper(String[] classNames) throws Exception {
-		this.classNames = classNames;
+	public JPlagTestSuiteHelper() throws IOException{
+		
 		this.resourceNames = loadResource();
 		this.tempFolderPath = getTempFolderPath();
 		System.out.println(String.format("temp path at [%s]", this.tempFolderPath));
-
+	}
+	
+	public void createTestCase(String[] classNames) throws Exception
+	{
+		this.classNames = classNames;
 		createNewTestCaseDirectory();
 	}
-
 	/**
 	 * Copies the passed filenames to a temporary path to use them in the tests
 	 * 
@@ -51,8 +56,8 @@ public class jplagTestSuiteHelper {
 		}
 		// Copy the resources data to the temporary path
 		for (int counter = 0; counter < classNames.length; counter++) {
-			Path originalPath = Path.of(testFileLocation.getAbsolutePath(), classNames[counter]);
-			Path copiePath = Path.of(tempFolderPath, TEMP_DIRECTORY_NAME + (counter + 1), classNames[counter]);
+			Path originalPath = Path.of(Constant.BASE_PATH_TO_JAVA_RESOURCES_SORTALGO.toString(), classNames[counter]);
+			Path copiePath = Path.of(tempFolderPath, Constant.TEMP_DIRECTORY_NAME + (counter + 1), classNames[counter]);
 			try {
 				File directory = new File(copiePath.toString());
 				if (!directory.exists()) {
@@ -76,7 +81,7 @@ public class jplagTestSuiteHelper {
 	 */
 	private String[] loadResource() {
 		String[] pathnames;
-		File f = new File(testFileLocation.getAbsolutePath());
+		File f = new File(Constant.BASE_PATH_TO_JAVA_RESOURCES_SORTALGO.toString());
 		pathnames = f.list();
 		return pathnames;
 	}
@@ -89,9 +94,9 @@ public class jplagTestSuiteHelper {
 	 * @throws IOException
 	 */
 	private String getTempFolderPath() throws IOException {
-		return !System.getProperty(TEMP_SYSTEM_DIRECTORY).isBlank()
-				? Path.of(System.getProperty(TEMP_SYSTEM_DIRECTORY), TEMP_DIRECTORY_NAME).toString()
-				: Path.of(new File(".").getCanonicalPath(), TEMP_DIRECTORY_NAME).toString();
+		return !System.getProperty(Constant.TEMP_SYSTEM_DIRECTORY).isBlank()
+				? Path.of(System.getProperty(Constant.TEMP_SYSTEM_DIRECTORY), Constant.TEMP_DIRECTORY_NAME).toString()
+				: Path.of(new File(".").getCanonicalPath(), Constant.TEMP_DIRECTORY_NAME).toString();
 	}
 
 	/**

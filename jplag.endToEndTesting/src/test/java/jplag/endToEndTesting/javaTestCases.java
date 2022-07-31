@@ -1,38 +1,32 @@
 package jplag.endToEndTesting;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.eq;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import de.jplag.JPlag;
 import de.jplag.JPlagComparison;
 import de.jplag.JPlagResult;
-import de.jplag.endToEndTesting.constants.constant;
-import de.jplag.endToEndTesting.helper.jplagTestSuiteHelper;
-import de.jplag.endToEndTesting.helper.resultHelper;
+import de.jplag.endToEndTesting.constants.Constant;
+import de.jplag.endToEndTesting.helper.JPlagTestSuiteHelper;
+import de.jplag.endToEndTesting.helper.ResultComparison;
 import de.jplag.options.JPlagOptions;
 import de.jplag.options.LanguageOption;
 
 class javaTestCases {
 
-	private resultHelper resultHelper;
+	private JPlagTestSuiteHelper testSuiteHelper;
 
 	@BeforeEach
 	public void setUp() {
-		assertTrue(constant.BASE_PATH_TO_JAVA_RESOURCES_SORTALGO.toFile().exists(), "Could not find base directory!");
+		assertTrue(Constant.BASE_PATH_TO_JAVA_RESOURCES_SORTALGO.toFile().exists(), "Could not find base directory!");
 		try {
-			System.out.println(constant.BASE_PATH_TO_JAVA_RESULT_XML.toAbsolutePath());
-			assertTrue(constant.BASE_PATH_TO_JAVA_RESULT_XML.toFile().exists(), "Could not find java result xml!");
-			resultHelper = new resultHelper(constant.BASE_PATH_TO_JAVA_RESULT_XML.toFile());
+			assertTrue(Constant.BASE_PATH_TO_JAVA_RESULT_JSON.toFile().exists(),
+					"Could not find java result xml at " +Constant.BASE_PATH_TO_JAVA_RESULT_JSON +"!");
+			testSuiteHelper = new JPlagTestSuiteHelper();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			assertTrue(false, e.getMessage());
@@ -44,24 +38,28 @@ class javaTestCases {
 	 */
 	@Test
 	void normalizationLevelTest_one() {
+
 		String[] testClassNames = new String[] { "SortAlgo.java", "SortAlgo1.java" };
 
 		try {
-			jplagTestSuiteHelper testSuiteHelper = new jplagTestSuiteHelper(testClassNames);
-			List<String> tempList = new ArrayList<String>();
-			tempList.add(testSuiteHelper.getFolderPath());
 
-			JPlagOptions options = new JPlagOptions(tempList, new ArrayList<String>(), LanguageOption.JAVA);
+			testSuiteHelper.createTestCase(testClassNames);
+
+			List<String> submissionTestPaths = new ArrayList<String>();
+			submissionTestPaths.add(testSuiteHelper.getFolderPath());
+
+			JPlagOptions options = new JPlagOptions(submissionTestPaths, new ArrayList<String>(), LanguageOption.JAVA);
 
 			JPlag jplag = new JPlag(options);
 			JPlagResult result = jplag.run();
 
-			String resultFromXML = resultHelper.getSavedTestResult(new Object() {
+			ResultComparison resultComparison = new ResultComparison(new Object() {
 			}.getClass().getEnclosingMethod().getName());
-			// shout be only one
+			// for the fine-granular testing strategy, the result object contains only one
+			// comparison.
 			for (JPlagComparison jPlagComparison : result.getComparisons()) {
 				System.out.println("Comparison of the stored values and the current equality values");
-				assertEquals(Float.parseFloat(resultFromXML), jPlagComparison.similarity());
+				assertEquals(resultComparison.getSimilarity(), jPlagComparison.similarity());
 			}
 			// after close the created directories are deleted
 			testSuiteHelper.close();
@@ -79,7 +77,7 @@ class javaTestCases {
 		String[] testClassNames = new String[] { "SortAlgo.java", "SortAlgo2.java" };
 
 		try {
-			jplagTestSuiteHelper testSuiteHelper = new jplagTestSuiteHelper(testClassNames);
+			testSuiteHelper.createTestCase(testClassNames);
 			List<String> tempList = new ArrayList<String>();
 			tempList.add(testSuiteHelper.getFolderPath());
 
@@ -88,12 +86,13 @@ class javaTestCases {
 			JPlag jplag = new JPlag(options);
 			JPlagResult result = jplag.run();
 
-			String resultFromXML = resultHelper.getSavedTestResult(new Object() {
+			ResultComparison resultComparison = new ResultComparison(new Object() {
 			}.getClass().getEnclosingMethod().getName());
-			// shout be only one
+			// for the fine-granular testing strategy, the result object contains only one
+			// comparison.
 			for (JPlagComparison jPlagComparison : result.getComparisons()) {
 				System.out.println("Comparison of the stored values and the current equality values");
-				assertEquals(Float.parseFloat(resultFromXML), jPlagComparison.similarity());
+				assertEquals(resultComparison.getSimilarity(), jPlagComparison.similarity());
 			}
 
 			// after close the created directories are deleted
@@ -112,7 +111,7 @@ class javaTestCases {
 		String[] testClassNames = new String[] { "SortAlgo1.java", "SortAlgo2.java" };
 
 		try {
-			jplagTestSuiteHelper testSuiteHelper = new jplagTestSuiteHelper(testClassNames);
+			testSuiteHelper.createTestCase(testClassNames);
 			List<String> tempList = new ArrayList<String>();
 			tempList.add(testSuiteHelper.getFolderPath());
 
@@ -121,12 +120,13 @@ class javaTestCases {
 			JPlag jplag = new JPlag(options);
 			JPlagResult result = jplag.run();
 
-			String resultFromXML = resultHelper.getSavedTestResult(new Object() {
+			ResultComparison resultComparison = new ResultComparison(new Object() {
 			}.getClass().getEnclosingMethod().getName());
-			// shout be only one
+			// for the fine-granular testing strategy, the result object contains only one
+			// comparison.
 			for (JPlagComparison jPlagComparison : result.getComparisons()) {
 				System.out.println("Comparison of the stored values and the current equality values");
-				assertEquals(Float.parseFloat(resultFromXML), jPlagComparison.similarity());
+				assertEquals(resultComparison.getSimilarity(), jPlagComparison.similarity());
 			}
 			// after close the created directories are deleted
 			testSuiteHelper.close();

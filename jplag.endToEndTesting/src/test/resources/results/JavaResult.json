@@ -1,0 +1,16 @@
+{ "results" :
+	[
+    	{
+			"functionName":"normalizationLevelTest_one",
+			"resultSimilarity": 100.0
+			}, 
+    	{
+			"functionName":"normalizationLevelTest_two",
+			"resultSimilarity": 100.0
+			}, 
+    	{
+			"functionName":"normalizationLevelTest_three",
+			"resultSimilarity": 100.0
+		}
+	]
+}
