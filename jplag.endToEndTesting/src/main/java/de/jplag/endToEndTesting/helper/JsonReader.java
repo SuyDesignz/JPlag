@@ -26,10 +26,10 @@ public class JsonReader {
 	}
 
 	/**
-	 * read in a json file located at the passing path.
+	 * read in a json file located at the passing path
 	 * 
 	 * @param path to the json file with extension
-	 * @return
+	 * @return a JSONObject of the persistence file in .json format
 	 * @throws IOException
 	 * @throws JSONException
 	 */

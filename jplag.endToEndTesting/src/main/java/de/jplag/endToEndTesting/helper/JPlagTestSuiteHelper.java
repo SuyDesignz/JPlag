@@ -20,14 +20,31 @@ public class JPlagTestSuiteHelper {
 	private String tempFolderPath;
 	private String[] classNames;
 
+	/**
+	 * 
+	 * @return the used temporary folder where the test data is copied to build the
+	 *         structure for the jplag api
+	 */
 	public String getFolderPath() {
 		return tempFolderPath;
 	}
 
+	/**
+	 * 
+	 * @return the class names for the current test instance that were passed in the
+	 *         constructor
+	 */
 	public String[] resourceNames() {
 		return resourceNames;
 	}
 
+	/**
+	 * Helper class for the endToEnd tests. In this class the necessary resources
+	 * are loaded, prepared and copied for the tests based on the passed parameters.
+	 * 
+	 * @param classNames of the resources that are required for the tests
+	 * @throws Exception
+	 */
 	public JPlagTestSuiteHelper(String[] classNames) throws Exception {
 		this.classNames = classNames;
 		this.resourceNames = loadResource();

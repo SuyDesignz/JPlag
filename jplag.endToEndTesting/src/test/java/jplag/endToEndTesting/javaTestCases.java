@@ -168,9 +168,10 @@ class javaTestCases {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	/**
-	 * Changing the program flow (token generation) (statments and functions must be independent from each other)
+	 * Changing the program flow (token generation) (statments and functions must be
+	 * independent from each other)
 	 */
 	@Test
 	void tokenGenerationLevelTest_two() {
@@ -202,9 +203,10 @@ class javaTestCases {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	/**
-	 * Variable decleration at the beginning of the program (Detecting Source Code Plagiarism [...])
+	 * Variable decleration at the beginning of the program (Detecting Source Code
+	 * Plagiarism [...])
 	 */
 	@Test
 	void tokenGenerationLevelTest_three() {
