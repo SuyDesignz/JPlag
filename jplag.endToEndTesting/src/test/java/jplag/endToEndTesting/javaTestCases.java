@@ -21,10 +21,10 @@ class javaTestCases {
 
 	@BeforeAll
 	public void setUp() throws Exception {
-		jplagTestSuiteHelper = new JPlagTestSuiteHelper(LanguageOption.JAVA);
 		assertTrue(Constant.BASE_PATH_TO_JAVA_RESOURCES_SORTALGO.toFile().exists(), "Could not find base directory!");
 		assertTrue(Constant.BASE_PATH_TO_JAVA_RESULT_JSON.toFile().exists(),
 				"Could not find java result json at " + Constant.BASE_PATH_TO_JAVA_RESULT_JSON + "!");
+		jplagTestSuiteHelper = new JPlagTestSuiteHelper(LanguageOption.JAVA);
 	}
 
 	@AfterEach
@@ -46,7 +46,9 @@ class javaTestCases {
 		TestCaseModel testCaseModel = jplagTestSuiteHelper.createNewTestCase(testClassNames);
 
 		JPlagResult jplagResult = new JPlag(testCaseModel.getJPlagOptionsFromCurrentModel()).run();
-
+		
+		jplagTestSuiteHelper.saveTemporaryTestResultModelToJson(jplagResult);
+		
 		assertTrue(testCaseModel.compaireModelProperties(jplagResult), "The JPlag results do not match the stored values!");
 	}
 
@@ -62,7 +64,9 @@ class javaTestCases {
 		TestCaseModel testCaseModel = jplagTestSuiteHelper.createNewTestCase(testClassNames);
 
 		JPlagResult jplagResult = new JPlag(testCaseModel.getJPlagOptionsFromCurrentModel()).run();
-
+		
+		jplagTestSuiteHelper.saveTemporaryTestResultModelToJson(jplagResult);
+		
 		assertTrue(testCaseModel.compaireModelProperties(jplagResult), "The JPlag results do not match the stored values!");
 	}
 
@@ -78,6 +82,8 @@ class javaTestCases {
 		TestCaseModel testCaseModel = jplagTestSuiteHelper.createNewTestCase(testClassNames);
 
 		JPlagResult jplagResult = new JPlag(testCaseModel.getJPlagOptionsFromCurrentModel()).run();
+		
+		jplagTestSuiteHelper.saveTemporaryTestResultModelToJson(jplagResult);
 
 		assertTrue(testCaseModel.compaireModelProperties(jplagResult), "The JPlag results do not match the stored values!");
 	}
@@ -94,6 +100,8 @@ class javaTestCases {
 		TestCaseModel testCaseModel = jplagTestSuiteHelper.createNewTestCase(testClassNames);
 
 		JPlagResult jplagResult = new JPlag(testCaseModel.getJPlagOptionsFromCurrentModel()).run();
+		
+		jplagTestSuiteHelper.saveTemporaryTestResultModelToJson(jplagResult);
 
 		assertTrue(testCaseModel.compaireModelProperties(jplagResult), "The JPlag results do not match the stored values!");
 	}
@@ -111,6 +119,8 @@ class javaTestCases {
 		TestCaseModel testCaseModel = jplagTestSuiteHelper.createNewTestCase(testClassNames);
 
 		JPlagResult jplagResult = new JPlag(testCaseModel.getJPlagOptionsFromCurrentModel()).run();
+		
+		jplagTestSuiteHelper.saveTemporaryTestResultModelToJson(jplagResult);
 
 		assertTrue(testCaseModel.compaireModelProperties(jplagResult), "The JPlag results do not match the stored values!");
 	}
@@ -127,6 +137,8 @@ class javaTestCases {
 		TestCaseModel testCaseModel = jplagTestSuiteHelper.createNewTestCase(testClassNames);
 
 		JPlagResult jplagResult = new JPlag(testCaseModel.getJPlagOptionsFromCurrentModel()).run();
+		
+		jplagTestSuiteHelper.saveTemporaryTestResultModelToJson(jplagResult);
 
 		assertTrue(testCaseModel.compaireModelProperties(jplagResult), "The JPlag results do not match the stored values!");
 	}
