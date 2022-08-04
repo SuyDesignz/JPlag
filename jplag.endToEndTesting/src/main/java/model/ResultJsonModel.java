@@ -6,9 +6,9 @@ import de.jplag.JPlagComparison;
 
 public class ResultJsonModel {
 
-	@JsonProperty("functionName")
+	@JsonProperty("function_name")
 	private String functionName;
-	@JsonProperty("resultSimilarity")
+	@JsonProperty("result_similarity")
 	private float resultSimilarity;
 	
 	public ResultJsonModel(String functionName, float resultSimilarity)
@@ -17,16 +17,15 @@ public class ResultJsonModel {
 		this.resultSimilarity = resultSimilarity;
 	}
 	
-	public ResultJsonModel(String functionName, JPlagComparison jPlagComparison)
-	{
-		this.functionName = functionName;
-		resultSimilarity = jPlagComparison.similarity();
-		
-	}
 	public ResultJsonModel()
 	{
 	}
 	
+	public ResultJsonModel(String functionName, JPlagComparison jplagComparison) {
+		this.functionName = functionName;
+		resultSimilarity = jplagComparison.similarity();
+	}
+
 	public float similarity()
 	{
 		return resultSimilarity;

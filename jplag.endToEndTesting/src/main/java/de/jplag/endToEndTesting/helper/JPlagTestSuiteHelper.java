@@ -11,6 +11,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.processing.FilerException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,9 +31,6 @@ public class JPlagTestSuiteHelper {
 	private static final Logger logger = LoggerFactory.getLogger("EndToEndTesting");
 
 	private String[] resourceNames;
-	private String temporaryFolderPath;
-	private String temporaryFolderPathToSubmissionFolder;
-	private String temporaryFolderPathToTemporarySavedResults;
 	private List<ResultJsonModel> resultModel;
 	private LanguageOption languageOption;
 
@@ -45,31 +44,20 @@ public class JPlagTestSuiteHelper {
 	 * @throws Exception
 	 */
 	public JPlagTestSuiteHelper(LanguageOption languageOption) throws Exception {
-		loadTemporaryFolderPaths();
 		this.languageOption = languageOption;
 		this.resourceNames = new File(Constant.BASE_PATH_TO_JAVA_RESOURCES_SORTALGO.toString()).list();
-		this.resultModel = JsonHelper
-				.getResultModelFromPath(Constant.BASE_PATH_TO_JAVA_RESULT_JSON.toAbsolutePath().toString());
-		cleanOutputDirectoires();
-		logger.info(String.format("temp path at [%s]", this.temporaryFolderPathToSubmissionFolder));
-	}
 
-	public void saveTemporaryTestResultModelToJson(JPlagResult jplagResult)
-			throws StreamWriteException, DatabindException, IOException {
-		for (JPlagComparison jPlagComparison : jplagResult.getAllComparisons()) {
-			ResultJsonModel resultJsonModel = new ResultJsonModel(
-					StackWalker.getInstance().walk(stream -> stream.skip(1).findFirst().get()).getMethodName(),
-					jPlagComparison);
-			JsonHelper.writeTemporarResult(resultJsonModel);
-			return;
-		}
+		this.resultModel = JsonHelper.getResultModelFromPath();
+		logger.info(String.format("temp path at [%s]", Constant.TEMPORARY_SUBMISSION_DIRECTORY_NAME));
 	}
 
 	/**
-	 * creates all necessary folder paths and objects for a test run.
+	 * creates all necessary folder paths and objects for a test run. Also searches
+	 * for the stored previous results of the test in order to compare them with the
+	 * current results.
 	 * 
 	 * @param classNames
-	 * @return
+	 * @return comparison results saved for the test
 	 * @throws Exception
 	 */
 	public TestCaseModel createNewTestCase(String[] classNames) throws Exception {
@@ -77,7 +65,15 @@ public class JPlagTestSuiteHelper {
 		var functionName = StackWalker.getInstance().walk(stream -> stream.skip(1).findFirst().get()).getMethodName();
 		ResultJsonModel resultJsonModel = resultModel.stream()
 				.filter(jsonModel -> functionName.equals(jsonModel.getFunctionName())).findAny().orElse(null);
-		return new TestCaseModel(temporaryFolderPathToSubmissionFolder, resultJsonModel, languageOption);
+		return new TestCaseModel(Constant.TEMPORARY_SUBMISSION_DIRECTORY_NAME, resultJsonModel, languageOption);
+	}
+
+	public void saveTemporaryTestResultModelToJson(JPlagResult jplagResult) throws StreamWriteException, DatabindException, IOException
+	{
+		for (JPlagComparison jplagComparison : jplagResult.getAllComparisons()) {
+			ResultJsonModel resultJsonModel = new ResultJsonModel(StackWalker.getInstance().walk(stream -> stream.skip(1).findFirst().get()).getMethodName(), jplagComparison);
+			JsonHelper.writeTemporarResult(resultJsonModel);
+		}
 	}
 
 	/**
@@ -87,7 +83,7 @@ public class JPlagTestSuiteHelper {
 	 */
 	public void clear() throws Exception {
 		logger.info("Class instance was cleaned!");
-		deleteFilesInFolder(new File(temporaryFolderPathToSubmissionFolder));
+		deleteCopiedFiles(new File(Constant.TEMPORARY_SUBMISSION_DIRECTORY_NAME));
 	}
 
 	/**
@@ -107,45 +103,17 @@ public class JPlagTestSuiteHelper {
 		// Copy the resources data to the temporary path
 		for (int counter = 0; counter < classNames.length; counter++) {
 			Path originalPath = Path.of(Constant.BASE_PATH_TO_JAVA_RESOURCES_SORTALGO.toString(), classNames[counter]);
-			Path copiePath = Path.of(temporaryFolderPathToSubmissionFolder,
-					Constant.TEMPORARY_DIRECTORY_NAME + (counter + 1), classNames[counter]);
-			try {
-				File directory = copiePath.toFile();
-				if (!directory.exists()) {
-					directory.mkdirs();
-				}
+			Path copiePath = Path.of(Constant.TEMPORARY_SUBMISSION_DIRECTORY_NAME,
+					Constant.TEMPORARY_DIRECTORY_NAME_SUBMISSION + (counter + 1), classNames[counter]);
 
-				logger.info(String.format("Copy file from [%s] to [%s]", originalPath, copiePath));
-				Files.copy(originalPath, copiePath, StandardCopyOption.REPLACE_EXISTING);
-			} catch (IOException ioException) {
-				logger.error(String.format("The specified file could not be copied! [%s] \n Exception [%s] ",
-						classNames[counter], ioException.getMessage()));
-				throw ioException;
+			File directory = new File(copiePath.toString());
+			if (!directory.exists()) {
+				directory.mkdirs();
 			}
+
+			Files.copy(originalPath, copiePath, StandardCopyOption.REPLACE_EXISTING);
+			logger.info(String.format("Copy file from [%s] to [%s]", originalPath, copiePath));
 		}
-	}
-
-	/**
-	 * Before starting a new instance of the class, the output folders and files
-	 * must be cleaned up
-	 */
-	private void cleanOutputDirectoires() {
-		logger.info("clean up the temporary folder structure as well as files");
-		deleteFilesInFolder(new File(temporaryFolderPathToSubmissionFolder));
-		deleteFilesInFolder(new File(temporaryFolderPathToTemporarySavedResults));
-	}
-
-	/**
-	 * instantiate the required folder paths 
-	 */
-	private void loadTemporaryFolderPaths() {
-		logger.info("instantiate the required folder paths ");
-		this.temporaryFolderPath = Path.of(System.getProperty(Constant.TEMPORARY_SYSTEM_DIRECTORY)).toString();
-		this.temporaryFolderPathToSubmissionFolder = Path.of(temporaryFolderPath, Constant.TEMPORARY_DIRECTORY_NAME)
-				.toString();
-		this.temporaryFolderPathToTemporarySavedResults = Path
-				.of(temporaryFolderPath, Constant.TEMPORARY_DIRECTORY_NAME_JSON).toString();
-
 	}
 
 	/**
@@ -153,15 +121,12 @@ public class JPlagTestSuiteHelper {
 	 * 
 	 * @param file
 	 */
-	private void deleteFilesInFolder(File folder) {
-		if (!folder.exists()) {
-			return;
-		}
+	private void deleteCopiedFiles(File folder) {
 		File[] files = folder.listFiles();
 		if (files != null) { // some JVMs return null for empty dirs
 			for (File f : files) {
 				if (f.isDirectory()) {
-					deleteFilesInFolder(f);
+					deleteCopiedFiles(f);
 				} else {
 					logger.info(String.format("Delete file in folder: [%s]", f.toString()));
 					f.delete();

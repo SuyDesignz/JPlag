@@ -1,0 +1,17 @@
+diff a/jplag.endToEndTesting/src/main/java/de/jplag/endToEndTesting/helper/JPlagTestSuiteHelper.java b/jplag.endToEndTesting/src/main/java/de/jplag/endToEndTesting/helper/JPlagTestSuiteHelper.java	(rejected hunks)
+@@ -66,6 +66,15 @@
+ 		logger.info(String.format("temp path at [%s]", this.temporaryFolderPathToSubmissionFolder));
+ 	}
+ 
++	public void saveTemporaryTestResultModelToJson(JPlagResult jplagResult)
++			throws StreamWriteException, DatabindException, IOException {
++		for (JPlagComparison jPlagComparison : jplagResult.getAllComparisons()) {
++			ResultJsonModel resultJsonModel = new ResultJsonModel(
++					StackWalker.getInstance().walk(stream -> stream.skip(1).findFirst().get()).getMethodName(),
++					jPlagComparison);
++			JsonHelper.writeTemporarResult(resultJsonModel);
++			return;
++		}
+ 	}
+ 
+ 	/**

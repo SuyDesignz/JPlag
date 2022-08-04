@@ -10,9 +10,12 @@ public final class Constant {
 
 	// can be exchanged for a suitable standard path if necessary
 	public static final String EMPTY_STRING = "";
-	public static final String TEMPORARY_DIRECTORY_NAME = "submission";
-	public static final String TEMPORARY_DIRECTORY_NAME_JSON = "jplagJsonResults";
+	public static final String TEMPORARY_DIRECTORY_NAME_SUBMISSION = "submission";
 	public static final String TEMPORARY_SYSTEM_DIRECTORY = "java.io.tmpdir";
+	public static final String TEMPORARY_DIRECTORY_NAME_JSON = "JPlagJsonResults";
+	
+	public static final String TEMPORARY_SUBMISSION_DIRECTORY_NAME = Path.of(System.getProperty(TEMPORARY_SYSTEM_DIRECTORY), TEMPORARY_DIRECTORY_NAME_SUBMISSION).toString();
+	public static final String TEMPORARY_JSON_DIRECTORY_NAME = Path.of(System.getProperty(TEMPORARY_SYSTEM_DIRECTORY), TEMPORARY_DIRECTORY_NAME_JSON).toString();
 
 	// constant final project strings
 	public static final Path BASE_PATH_TO_JAVA_RESOURCES_SORTALGO = Path.of("src", "test", "resources", "java",
