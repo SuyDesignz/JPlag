@@ -3,16 +3,10 @@ package model;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import de.jplag.JPlagComparison;
-import de.jplag.JPlagResult;
 import de.jplag.options.JPlagOptions;
 import de.jplag.options.LanguageOption;
 
 public class TestCaseModel {
-	private static final Logger logger = LoggerFactory.getLogger("EndToEndTesting");
 	
 	private ResultJsonModel resultJsonModel;
 	private LanguageOption languageOption;
