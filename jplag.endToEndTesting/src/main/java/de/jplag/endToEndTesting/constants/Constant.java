@@ -4,14 +4,12 @@ import java.nio.file.Path;
 
 /**
  * All constant values that are needed in the test cases or helper classes.
- *
  */
 public final class Constant {
 
-	private Constant() {
-		// private constructor to prevent instantiation
-	}
-
+    private Constant() {
+        // private constructor to prevent instantiation
+    }
 	/**
 	 * Empty string to be able to query possible empty return values.
 	 */
@@ -48,4 +46,5 @@ public final class Constant {
 	 */
 	public static final Path BASE_PATH_TO_JAVA_RESULT_JSON = Path.of("src", "test", "resources", "results",
 			"javaResult.json");
+
 }

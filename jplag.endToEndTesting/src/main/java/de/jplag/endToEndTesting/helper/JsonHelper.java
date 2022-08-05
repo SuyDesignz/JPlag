@@ -18,7 +18,6 @@ import de.jplag.endToEndTesting.model.ResultJsonModel;
 
 /**
  * Helper class for serializing and creating all json dependent events.
- *
  */
 public final class JsonHelper {
 

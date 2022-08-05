@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +20,6 @@ import de.jplag.JPlagResult;
 import de.jplag.endToEndTesting.constants.Constant;
 import de.jplag.endToEndTesting.model.ResultJsonModel;
 import de.jplag.endToEndTesting.model.TestCaseModel;
-
 import de.jplag.options.LanguageOption;
 
 /**
@@ -30,7 +28,6 @@ import de.jplag.options.LanguageOption;
  * the resource folder to a temporary location, thus creating a folder structure
  * that can be tested by JPlag. Models are instantiated here and required
  * information for the tests is loaded.
- *
  */
 public class JPlagTestSuiteHelper {
 
