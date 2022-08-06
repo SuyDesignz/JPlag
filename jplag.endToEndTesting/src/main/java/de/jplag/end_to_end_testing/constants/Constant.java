@@ -1,4 +1,4 @@
-package de.jplag.endToEndTesting.constants;
+package de.jplag.end_to_end_testing.constants;
 
 import java.nio.file.Path;
 
@@ -7,9 +7,10 @@ import java.nio.file.Path;
  */
 public final class Constant {
 
-    private Constant() {
-        // private constructor to prevent instantiation
-    }
+	private Constant() {
+		// private constructor to prevent instantiation
+	}
+
 	/**
 	 * Empty string to be able to query possible empty return values.
 	 */
@@ -29,7 +30,6 @@ public final class Constant {
 	 * path is extended with the "TEMPORARY_DIRECTORY_NAME", which is predefined in
 	 * this class.
 	 */
-
 	public static final String TEMPORARY_SUBMISSION_DIRECTORY_NAME = Path
 			.of(System.getProperty(TEMPORARY_SYSTEM_DIRECTORY), TEMPORARY_DIRECTORY_NAME_SUBMISSION).toString();
 
@@ -46,5 +46,4 @@ public final class Constant {
 	 */
 	public static final Path BASE_PATH_TO_JAVA_RESULT_JSON = Path.of("src", "test", "resources", "results",
 			"javaResult.json");
-
 }

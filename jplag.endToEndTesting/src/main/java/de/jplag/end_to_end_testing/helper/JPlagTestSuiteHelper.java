@@ -1,4 +1,4 @@
-package de.jplag.endToEndTesting.helper;
+package de.jplag.end_to_end_testing.helper;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -17,9 +17,10 @@ import com.fasterxml.jackson.databind.DatabindException;
 
 import de.jplag.JPlagComparison;
 import de.jplag.JPlagResult;
-import de.jplag.endToEndTesting.constants.Constant;
-import de.jplag.endToEndTesting.model.ResultJsonModel;
-import de.jplag.endToEndTesting.model.TestCaseModel;
+import de.jplag.end_to_end_testing.constants.Constant;
+import de.jplag.end_to_end_testing.model.JsonModel;
+import de.jplag.end_to_end_testing.model.ResultModel;
+import de.jplag.end_to_end_testing.model.TestCaseModel;
 import de.jplag.options.LanguageOption;
 
 /**
@@ -31,11 +32,11 @@ import de.jplag.options.LanguageOption;
  */
 public class JPlagTestSuiteHelper {
 
-	private static final Logger logger = LoggerFactory.getLogger("EndToEndTesting");
+    private static final Logger logger = LoggerFactory.getLogger(JPlagTestSuiteHelper.class);
 
-	private String[] resourceNames;
-	private List<ResultJsonModel> resultModel;
-	private LanguageOption languageOption;
+    private String[] resourceNames;
+    private List<JsonModel> resultModel;
+    private LanguageOption languageOption;
 
 	/**
 	 * Helper class for the endToEnd tests. In this class the necessary resources
@@ -51,37 +52,31 @@ public class JPlagTestSuiteHelper {
 	public JPlagTestSuiteHelper(LanguageOption languageOption) throws IOException {
 		this.languageOption = languageOption;
 		this.resourceNames = new File(Constant.BASE_PATH_TO_JAVA_RESOURCES_SORTALGO.toString()).list();
+        this.resultModel = JsonHelper.getResultModelFromPath();
+        
+        logger.info("temp path at [{}]", Constant.TEMPORARY_SUBMISSION_DIRECTORY_NAME);
+    }
 
-		this.resultModel = JsonHelper.getResultModelFromPath();
-		logger.info(String.format("temp path at [%s]", Constant.TEMPORARY_SUBMISSION_DIRECTORY_NAME));
-	}
+    /**
+     * creates all necessary folder paths and objects for a test run. Also searches for the stored previous results of the
+     * test in order to compare them with the current results.
+     * @param classNames Array of class names with language specific extension to be prepared for a test.
+     * @return comparison results saved for the test
+     * @throws IOException Exception can be thrown in cases that involve reading, copying or locating files.
+     */
+    public TestCaseModel createNewTestCase(String[] classNames) throws IOException {
+        createNewTestCaseDirectory(classNames);
+        var functionName = StackWalker.getInstance().walk(stream -> stream.skip(1).findFirst().get()).getMethodName();
+        JsonModel resultJsonModel = resultModel.stream().filter(jsonModel -> functionName.equals(jsonModel.getFunctionName())).findAny().orElse(null);
+        return new TestCaseModel(Constant.TEMPORARY_SUBMISSION_DIRECTORY_NAME, resultJsonModel, languageOption);
+    }
 
-	/**
-	 * creates all necessary folder paths and objects for a test run. Also searches
-	 * for the stored previous results of the test in order to compare them with the
-	 * current results.
-	 * 
-	 * @param classNames Array of class names with language specific extension to be
-	 *                   prepared for a test.
-	 * @return comparison results saved for the test
-	 * @throws IOException Exception can be thrown in cases that involve reading,
-	 *                     copying or locating files.
-	 */
-	public TestCaseModel createNewTestCase(String[] classNames) throws IOException {
-		createNewTestCaseDirectory(classNames);
-		var functionName = StackWalker.getInstance().walk(stream -> stream.skip(1).findFirst().get()).getMethodName();
-		ResultJsonModel resultJsonModel = resultModel.stream()
-				.filter(jsonModel -> functionName.equals(jsonModel.getFunctionName())).findAny().orElse(null);
-		return new TestCaseModel(Constant.TEMPORARY_SUBMISSION_DIRECTORY_NAME, resultJsonModel, languageOption);
-	}
-
-	public void saveTemporaryTestResultModelToJson(JPlagResult jplagResult)
+	public void saveTemporaryTestResultModelToJson(JPlagResult jplagResult, Integer identifier)
 			throws StreamWriteException, DatabindException, IOException {
+		
 		for (JPlagComparison jplagComparison : jplagResult.getAllComparisons()) {
-			ResultJsonModel resultJsonModel = new ResultJsonModel(
-					StackWalker.getInstance().walk(stream -> stream.skip(1).findFirst().get()).getMethodName(),
-					jplagComparison);
-			JsonHelper.writeTemporarResult(resultJsonModel);
+			ResultModel resultModel = new ResultModel(jplagComparison.similarity() , identifier);
+			JsonHelper.writeTemporarResultModel(resultModel);
 		}
 	}
 
@@ -115,40 +110,32 @@ public class JPlagTestSuiteHelper {
 			Path copiePath = Path.of(Constant.TEMPORARY_SUBMISSION_DIRECTORY_NAME,
 					Constant.TEMPORARY_DIRECTORY_NAME_SUBMISSION + (counter + 1), classNames[counter]);
 
-			File directory = new File(copiePath.toString());
-			if (!directory.exists()) {
-				directory.mkdirs();
-			}
+            Files.copy(originalPath, copiePath, StandardCopyOption.REPLACE_EXISTING);
+            logger.info("Copy file from [{}] to [{}]", originalPath, copiePath);
+        }
+    }
 
-			Files.copy(originalPath, copiePath, StandardCopyOption.REPLACE_EXISTING);
-			logger.info(String.format("Copy file from [%s] to [%s]", originalPath, copiePath));
-		}
-	}
-
-	/**
-	 * Delete directory with including files
-	 * 
-	 * @param file Path to a folder or file to be deleted. This happens recursively
-	 *             to the path
-	 */
-	private void deleteCopiedFiles(File folder) {
-		File[] files = folder.listFiles();
-		if (files != null) { // some JVMs return null for empty dirs
-			for (File file : files) {
-				if (file.isDirectory()) {
-					deleteCopiedFiles(file);
-				} else {
-					logger.info(String.format("Delete file in folder: [%s]", file.toString()));
-					if (!file.delete()) {
-						logger.error(String.format("The file at [%s] could not be deleted", file.toString()));
-					}
-				}
-			}
-		}
-		logger.info(String.format("Delete folder: [%s]", folder.toString()));
-		if (!folder.delete()) {
-			logger.error(String.format("The folder at [%s] could not be deleted", folder.toString()));
-		}
-	}
-
+    /**
+     * Delete directory with including files
+     * @param file Path to a folder or file to be deleted. This happens recursively to the path
+     */
+    private void deleteCopiedFiles(File folder) {
+        File[] files = folder.listFiles();
+        if (files != null) { // some JVMs return null for empty dirs
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    deleteCopiedFiles(file);
+                } else {
+                    logger.info("Delete file in folder: [{}]", file);
+                    if (!file.delete()) {
+                        logger.error("The file at [{}] could not be deleted", file);
+                    }
+                }
+            }
+        }
+        logger.info("Delete folder: [{}]", folder.toString());
+        if (!folder.delete()) {
+            logger.error("The folder at [{}] could not be deleted", folder);
+        }
+    }
 }
